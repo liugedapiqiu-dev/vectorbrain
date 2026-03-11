@@ -1,0 +1,144 @@
+{
+  "_comment": "OpenClaw VectorBrain 技能配置模板",
+  "_version": "1.0.0",
+  "_description": "复制此文件为 skill.json 并填入你的配置",
+  
+  "name": "vectorbrain",
+  "version": "1.0.0",
+  "description": "VectorBrain 记忆和技能系统 - 提供记忆检索、任务管理、机会扫描等功能",
+  "author": "OpenClaw Community",
+  "license": "MIT",
+  "homepage": "https://github.com/liugedapiqiu-dev/vectorbrain",
+  
+  "entry": "connector/openclaw_connector.py",
+  
+  "hooks": {
+    "message:new": {
+      "enabled": true,
+      "priority": 10,
+      "async": true,
+      "timeout": 30,
+      "filter": {
+        "channels": ["feishu", "webchat", "telegram", "discord"],
+        "users": ["*"],
+        "keywords": []
+      },
+      "config": {
+        "auto_save_memory": true,
+        "auto_retrieve_memory": true,
+        "memory_inject_threshold": 0.7,
+        "max_memories_to_inject": 5
+      }
+    },
+    "command:new": {
+      "enabled": true,
+      "priority": 5,
+      "async": true,
+      "timeout": 60,
+      "commands": ["task", "memory", "search", "opportunity"],
+      "config": {
+        "prefix": "/",
+        "case_sensitive": false
+      }
+    }
+  },
+  
+  "skills": {
+    "memory_search": {
+      "enabled": true,
+      "description": "记忆检索技能",
+      "endpoint": "connector/vector_search.py",
+      "config": {
+        "default_limit": 5,
+        "default_threshold": 0.7
+      }
+    },
+    "task_manager": {
+      "enabled": true,
+      "description": "任务管理技能",
+      "endpoint": "connector/task_manager.py",
+      "config": {
+        "auto_execute": true,
+        "max_concurrent_tasks": 3
+      }
+    },
+    "opportunity_scan": {
+      "enabled": true,
+      "description": "机会扫描技能",
+      "endpoint": "connector/opportunity_poller.py",
+      "config": {
+        "scan_interval": 300,
+        "notify_on_high_priority": true
+      }
+    },
+    "network_monitor": {
+      "enabled": true,
+      "description": "网络监控技能",
+      "endpoint": "connector/network_monitor.py",
+      "config": {
+        "check_interval": 10,
+        "fail_threshold": 6,
+        "auto_switch_model": true
+      }
+    }
+  },
+  
+  "config": {
+    "vectorbrain": {
+      "home": "~/.vectorbrain",
+      "memory_db": "~/.vectorbrain/memory/knowledge_memory.db",
+      "episodic_db": "~/.vectorbrain/memory/episodic_memory.db",
+      "task_db": "~/.vectorbrain/tasks/task_queue.db",
+      "opportunity_db": "~/.vectorbrain/opportunity/opportunities.db"
+    },
+    "ollama": {
+      "enabled": true,
+      "base_url": "http://127.0.0.1:11434",
+      "model": "qwen2.5:14b",
+      "timeout": 120
+    },
+    "cloud": {
+      "enabled": true,
+      "provider": "dashscope",
+      "api_key": "YOUR_DASHSCOPE_API_KEY",
+      "model": "qwen3.5-plus",
+      "timeout": 30
+    },
+    "logging": {
+      "level": "INFO",
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+      "log_dir": "logs"
+    }
+  },
+  
+  "dependencies": {
+    "python": ">=3.11",
+    "packages": [
+      "fastapi>=0.109.0",
+      "uvicorn>=0.27.0",
+      "httpx>=0.27.0",
+      "pydantic>=2.0.0",
+      "sqlite3",
+      "psutil>=5.9.0"
+    ]
+  },
+  
+  "installation": {
+    "steps": [
+      "pip install -r requirements.txt",
+      "cp config/config.example.json config/config.json",
+      "编辑 config/config.json 填入你的配置",
+      "openclaw skills enable vectorbrain",
+      "openclaw gateway restart"
+    ]
+  },
+  
+  "testing": {
+    "commands": [
+      "python scripts/health_check.py",
+      "python scripts/test_integration.py",
+      "python scripts/test_memory_save.py",
+      "python scripts/test_task_create.py"
+    ]
+  }
+}
