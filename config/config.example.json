@@ -1,0 +1,46 @@
+{
+  "_comment": "配置模板 - 复制此文件为 config.json 并填入你的配置",
+  
+  "ollama": {
+    "enabled": true,
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen2.5:14b",
+    "timeout": 120
+  },
+  
+  "cloud": {
+    "enabled": true,
+    "provider": "dashscope",
+    "api_key": "YOUR_DASHSCOPE_API_KEY",
+    "model": "qwen3.5-plus",
+    "timeout": 30
+  },
+  
+  "network_monitor": {
+    "enabled": true,
+    "check_interval": 10,
+    "fail_threshold": 6,
+    "check_urls": [
+      "8.8.8.8",
+      "https://dashscope.aliyuncs.com",
+      "https://www.baidu.com"
+    ]
+  },
+  
+  "dashboard": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 18790
+  },
+  
+  "task_scheduler": {
+    "enabled": true,
+    "default_interval": 300
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "log_dir": "logs"
+  }
+}
